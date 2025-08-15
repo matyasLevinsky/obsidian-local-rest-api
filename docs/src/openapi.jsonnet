@@ -656,7 +656,7 @@ std.manifestYamlDoc(
             'Search',
           ],
           summary: 'Perform advanced fulltext search with context snippets and filters\n',
-          description: 'Performs a comprehensive fulltext search across your vault with advanced options including regex support, file filtering, path restrictions, context windows, and case sensitivity controls. This search uses Obsidian\'s vault APIs to provide consistent and secure search functionality.\n\n## Features:\n\n- **Query Types**: Literal text search with regex support\n- **Context Windows**: Configurable character context around matches\n- **File Filtering**: Search specific file extensions or all files\n- **Path Restrictions**: Limit search to specific vault folders\n- **Case Sensitivity**: Optional case-sensitive or case-insensitive search\n- **Security**: Prevents directory traversal and unauthorized access\n\n## Examples:\n\n- Basic search: `{"query": "obsidian vault"}`\n- Regex search: `{"query": "\\\\w+@\\\\w+\\\\.\\\\w+", "useRegex": true}`\n- Folder-specific: `{"query": "meeting notes", "path": "work/"}`\n- File type filter: `{"query": "TODO", "fileExtension": ".txt"}`\n- Case-sensitive: `{"query": "API", "caseSensitive": true}`\n',
+          description: 'Performs a comprehensive fulltext search across your vault with advanced options including regex support, file filtering, path restrictions, context windows, and case sensitivity controls. This search uses Obsidian\'s vault APIs to provide consistent and secure search functionality.\n\n## Features:\n\n- **Query Types**: Literal text search with regex support\n- **Context Windows**: Configurable character context around matches\n- **File Filtering**: Search specific file extensions or all files\n- **Path Restrictions**: Limit search to specific vault folders\n- **Case Sensitivity**: Optional case-sensitive or case-insensitive search\n- **Security**: Prevents directory traversal and unauthorized access\n\n## Examples:\n\n- Basic search: `{"query": "obsidian vault", "contextLength": 100}`\n- Regex search: `{"query": "\\\\w+@\\\\w+\\\\.\\\\w+", "useRegex": true, "contextLength": 150}`\n- Advanced search: `{"query": "project timeline", "path": "work/projects/", "fileExtension": ".md", "contextLength": 250, "caseSensitive": true}`\n',
           requestBody: {
             required: true,
             content: {
@@ -712,9 +712,9 @@ std.manifestYamlDoc(
                     },
                   },
                   regex_search: {
-                    summary: 'Regex pattern search',
+                    summary: 'Regex pattern search for email addresses',
                     value: {
-                      query: 'TODO|FIXME|NOTE',
+                      query: '\\\\w+@\\\\w+\\\\.\\\\w+',
                       useRegex: true,
                       contextLength: 150,
                     },
@@ -835,14 +835,14 @@ std.manifestYamlDoc(
                       summary: 'Missing required query parameter',
                       value: {
                         errorCode: 40000,
-                        message: 'Query parameter is required',
+                        message: 'Bad Request\\nQuery parameter is required',
                       },
                     },
                     invalid_path: {
                       summary: 'Invalid path with directory traversal attempt',
                       value: {
-                        errorCode: 40001,
-                        message: 'Search path must be relative and within vault bounds',
+                        errorCode: 40000,
+                        message: 'Bad Request\\nSearch path must be relative and within vault bounds',
                       },
                     },
                   },
@@ -865,6 +865,15 @@ std.manifestYamlDoc(
                 'application/json': {
                   schema: {
                     '$ref': '#/components/schemas/Error',
+                  },
+                  examples: {
+                    search_failed: {
+                      summary: 'Search operation failed',
+                      value: {
+                        errorCode: 50001,
+                        message: 'The search operation failed due to an internal error.\\nSearch failed: [specific error details]',
+                      },
+                    },
                   },
                 },
               },

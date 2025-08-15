@@ -1564,11 +1564,9 @@ paths:
         
         ## Examples:
         
-        - Basic search: `{"query": "obsidian vault"}`
-        - Regex search: `{"query": "\\w+@\\w+\\.\\w+", "useRegex": true}`
-        - Folder-specific: `{"query": "meeting notes", "path": "work/"}`
-        - File type filter: `{"query": "TODO", "fileExtension": ".txt"}`
-        - Case-sensitive: `{"query": "API", "caseSensitive": true}`
+        - Basic search: `{"query": "obsidian vault", "contextLength": 100}`
+        - Regex search: `{"query": "\\w+@\\w+\\.\\w+", "useRegex": true, "contextLength": 150}`
+        - Advanced search: `{"query": "project timeline", "path": "work/projects/", "fileExtension": ".md", "contextLength": 250, "caseSensitive": true}`
       requestBody:
         content:
           application/json:
@@ -1588,10 +1586,10 @@ paths:
                   contextLength: 100
                   query: "obsidian vault"
               regex_search:
-                summary: "Regex pattern search"
+                summary: "Regex pattern search for email addresses"
                 value:
                   contextLength: 150
-                  query: "TODO|FIXME|NOTE"
+                  query: "\\\\w+@\\\\w+\\\\.\\\\w+"
                   useRegex: true
             schema:
               properties:
@@ -1694,13 +1692,13 @@ paths:
                 invalid_path:
                   summary: "Invalid path with directory traversal attempt"
                   value:
-                    errorCode: 40001
-                    message: "Search path must be relative and within vault bounds"
+                    errorCode: 40000
+                    message: "Bad Request\\nSearch path must be relative and within vault bounds"
                 missing_query:
                   summary: "Missing required query parameter"
                   value:
                     errorCode: 40000
-                    message: "Query parameter is required"
+                    message: "Bad Request\\nQuery parameter is required"
               schema:
                 "$ref": "#/components/schemas/Error"
           description: "Bad request - invalid parameters"
@@ -1713,6 +1711,12 @@ paths:
         "500":
           content:
             application/json:
+              examples:
+                search_failed:
+                  summary: "Search operation failed"
+                  value:
+                    errorCode: 50001
+                    message: "The search operation failed due to an internal error.\\nSearch failed: [specific error details]"
               schema:
                 "$ref": "#/components/schemas/Error"
           description: "Internal server error during search"
