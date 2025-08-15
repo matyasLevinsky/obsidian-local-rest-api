@@ -1173,13 +1173,30 @@ export default class RequestHandler {
         const matchStart = match.index;
         const matchEnd = matchStart + match[0].length;
         
-        // Extract context around the match
-        const contextStart = Math.max(0, matchStart - contextWindow);
-        const contextEnd = Math.min(line.length, matchEnd + contextWindow);
+        // Get the matched line plus 2 lines before and after by default
+        const linesBefore = 2;
+        const linesAfter = 2;
+        const startLineIndex = Math.max(0, lineIndex - linesBefore);
+        const endLineIndex = Math.min(lines.length - 1, lineIndex + linesAfter);
         
-        const snippet = line.substring(contextStart, contextEnd);
-        const adjustedMatchStart = matchStart - contextStart;
-        const adjustedMatchEnd = matchEnd - contextStart;
+        // Extract the extended content (matched line + surrounding lines)
+        const extendedLines = lines.slice(startLineIndex, endLineIndex + 1);
+        const extendedContent = extendedLines.join('\n');
+        
+        // Calculate the position of the match within the extended content
+        const linesBeforeCount = lineIndex - startLineIndex;
+        const charactersBeforeMatch = extendedLines.slice(0, linesBeforeCount).join('\n').length + 
+                                    (linesBeforeCount > 0 ? 1 : 0); // +1 for the newline character
+        const matchStartInExtended = charactersBeforeMatch + matchStart;
+        const matchEndInExtended = charactersBeforeMatch + matchEnd;
+        
+        // Now extract the context window from the extended content
+        const contextStart = Math.max(0, matchStartInExtended - contextWindow);
+        const contextEnd = Math.min(extendedContent.length, matchEndInExtended + contextWindow);
+        
+        const snippet = extendedContent.substring(contextStart, contextEnd);
+        const adjustedMatchStart = matchStartInExtended - contextStart;
+        const adjustedMatchEnd = matchEndInExtended - contextStart;
         
         matches.push({
           line: lineIndex + 1, // 1-based line numbers
