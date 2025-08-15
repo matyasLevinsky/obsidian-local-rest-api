@@ -150,3 +150,24 @@ export interface FileMetadataObject {
   path: string;
   content: string;
 }
+
+export interface FulltextSearchRequest {
+  query: string;
+  contextWindow?: number;
+  useRegex?: boolean;
+  path?: string;
+  fileExtension?: string;
+  caseSensitive?: boolean;
+}
+
+export interface FulltextSearchMatch {
+  line: number;
+  snippet: string;
+  matchStart: number;
+  matchEnd: number;
+}
+
+export interface FulltextSearchResponseItem {
+  filename: string;
+  matches: FulltextSearchMatch[];
+}
