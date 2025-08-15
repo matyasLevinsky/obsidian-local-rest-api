@@ -869,7 +869,7 @@ describe("requestHandler", () => {
         .set("Authorization", `Bearer ${API_KEY}`)
         .send({
           query: "Obsidian vault",
-          contextWindow: 50
+          contextLength: 50
         })
         .expect(200);
 

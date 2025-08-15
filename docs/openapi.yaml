@@ -1573,27 +1573,25 @@ paths:
         content:
           application/json:
             examples:
+              advanced_search:
+                summary: "Advanced search with all features"
+                value:
+                  caseSensitive: true
+                  contextLength: 250
+                  fileExtension: ".md"
+                  path: "work/projects/"
+                  query: "project timeline"
+                  useRegex: false
               basic_search:
                 summary: "Basic text search"
                 value:
-                  contextWindow: 100
+                  contextLength: 100
                   query: "obsidian vault"
-              case_sensitive_search:
-                summary: "Case-sensitive search"
-                value:
-                  caseSensitive: true
-                  query: "API"
-              folder_search:
-                summary: "Search within specific folder"
-                value:
-                  fileExtension: ".md"
-                  path: "work/"
-                  query: "meeting notes"
               regex_search:
-                summary: "Regex pattern search for email addresses"
+                summary: "Regex pattern search"
                 value:
-                  contextWindow: 50
-                  query: "\\w+@\\w+\\.\\w+"
+                  contextLength: 150
+                  query: "TODO|FIXME|NOTE"
                   useRegex: true
             schema:
               properties:
@@ -1602,7 +1600,7 @@ paths:
                   description: "Whether the search should be case-sensitive."
                   example: false
                   type: "boolean"
-                contextWindow:
+                contextLength:
                   default: 200
                   description: "Number of characters to include before and after each match for context."
                   example: 100

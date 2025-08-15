@@ -672,7 +672,7 @@ std.manifestYamlDoc(
                       description: 'The search query string. Can be literal text or regex pattern.',
                       example: 'obsidian vault',
                     },
-                    contextWindow: {
+                    contextLength: {
                       type: 'number',
                       description: 'Number of characters to include before and after each match for context.',
                       default: 200,
@@ -708,30 +708,26 @@ std.manifestYamlDoc(
                     summary: 'Basic text search',
                     value: {
                       query: 'obsidian vault',
-                      contextWindow: 100,
+                      contextLength: 100,
                     },
                   },
                   regex_search: {
-                    summary: 'Regex pattern search for email addresses',
+                    summary: 'Regex pattern search',
                     value: {
-                      query: '\\w+@\\w+\\.\\w+',
+                      query: 'TODO|FIXME|NOTE',
                       useRegex: true,
-                      contextWindow: 50,
+                      contextLength: 150,
                     },
                   },
-                  folder_search: {
-                    summary: 'Search within specific folder',
+                  advanced_search: {
+                    summary: 'Advanced search with all features',
                     value: {
-                      query: 'meeting notes',
-                      path: 'work/',
+                      query: 'project timeline',
+                      path: 'work/projects/',
                       fileExtension: '.md',
-                    },
-                  },
-                  case_sensitive_search: {
-                    summary: 'Case-sensitive search',
-                    value: {
-                      query: 'API',
+                      contextLength: 250,
                       caseSensitive: true,
+                      useRegex: false,
                     },
                   },
                 },

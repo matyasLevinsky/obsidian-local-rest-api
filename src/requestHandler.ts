@@ -1042,7 +1042,7 @@ export default class RequestHandler {
       return;
     }
 
-    const contextWindow = request.contextWindow || 200;
+    const contextLength = request.contextLength || 200;
     const fileExtension = request.fileExtension || ".md";
     const searchPath = request.path || "";
     const caseSensitive = request.caseSensitive || false; // Default to case-insensitive
@@ -1059,7 +1059,7 @@ export default class RequestHandler {
     try {
       const results = await this.executeVaultSearch(
         request.query,
-        contextWindow,
+        contextLength,
         fileExtension,
         searchPath,
         request.useRegex || false,
@@ -1068,7 +1068,7 @@ export default class RequestHandler {
       res.json(results);
     } catch (error) {
       this.returnCannedResponse(res, {
-        statusCode: 500,
+        errorCode: ErrorCode.SearchFailed,
         message: `Search failed: ${error.message}`,
       });
     }
@@ -1076,7 +1076,7 @@ export default class RequestHandler {
 
   private async executeVaultSearch(
     query: string,
-    contextWindow: number,
+    contextLength: number,
     fileExtension: string,
     searchPath: string,
     useRegex: boolean,
@@ -1094,7 +1094,7 @@ export default class RequestHandler {
     for (const file of filesToSearch) {
       try {
         const content = await this.app.vault.cachedRead(file);
-        const matches = this.findMatchesInContent(content, searchPattern, contextWindow);
+        const matches = this.findMatchesInContent(content, searchPattern, contextLength);
         
         if (matches.length > 0) {
           results.push({
@@ -1159,7 +1159,7 @@ export default class RequestHandler {
   private findMatchesInContent(
     content: string, 
     searchPattern: RegExp, 
-    contextWindow: number
+    contextLength: number
   ): FulltextSearchMatch[] {
     const matches: FulltextSearchMatch[] = [];
     const lines = content.split('\n');
@@ -1191,8 +1191,8 @@ export default class RequestHandler {
         const matchEndInExtended = charactersBeforeMatch + matchEnd;
         
         // Now extract the context window from the extended content
-        const contextStart = Math.max(0, matchStartInExtended - contextWindow);
-        const contextEnd = Math.min(extendedContent.length, matchEndInExtended + contextWindow);
+        const contextStart = Math.max(0, matchStartInExtended - contextLength);
+        const contextEnd = Math.min(extendedContent.length, matchEndInExtended + contextLength);
         
         const snippet = extendedContent.substring(contextStart, contextEnd);
         const adjustedMatchStart = matchStartInExtended - contextStart;
